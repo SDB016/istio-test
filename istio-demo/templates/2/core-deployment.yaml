@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: core
+    namespace: istio-demo
     labels:
         app: core
         tier: backend
@@ -18,6 +19,7 @@ spec:
                 app: core
                 tier: backend
         spec:
+            serviceAccountName: core-service-account
             restartPolicy: Always
             containers:
             - name: core

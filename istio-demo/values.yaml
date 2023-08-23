@@ -1,0 +1,6 @@
+aws:
+  sqs:
+    accessKeyId: test
+    secretAccessKey: password
+    region: ap-northeast-2
+    endpointUrl: http://localstack:4566

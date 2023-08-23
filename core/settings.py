@@ -13,9 +13,9 @@ class _Settings(BaseSettings):
     SQS_QUEUE_URL: Optional[str]
     AWS_ACCESS_KEY_ID: Optional[str]
     AWS_SECRET_ACCESS_KEY: Optional[str]
+    AWS_ENDPOINT_URL: Optional[str]
     SQS_MAX_NUMBER_OF_MESSAGES: Optional[int] = 10
     SQS_WAIT_TIME_SECONDS: Optional[int] = 20
     SQS_MAX_DELETE_ATTEMPTS: Optional[int] = 3
-
 
 SETTINGS = _Settings()

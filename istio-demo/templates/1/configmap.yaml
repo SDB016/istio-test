@@ -7,9 +7,10 @@ data:
     DEBUG: 'true'
     APP_HOST: 'localhost'
     APP_PORT: '8000'
-    SQS_QUEUE_URL: ''
-    AWS_ACCESS_KEY_ID: 'test'
-    AWS_SECRET_ACCESS_KEY: 'password'
+    SQS_QUEUE_URL: 'http://localhost:4566/000000000000/test-sqs.fifo'
+    AWS_ACCESS_KEY_ID: {{ .Values.aws.sqs.accessKeyId | quote }}
+    AWS_SECRET_ACCESS_KEY: {{ .Values.aws.sqs.secretAccessKey | quote }}
+    AWS_ENDPOINT_URL: {{ .Values.aws.sqs.endpointUrl | quote }}
     SQS_MAX_NUMBER_OF_MESSAGES: '10'
     SQS_WAIT_TIME_SECONDS: '20'
     SQS_MAX_DELETE_ATTEMPTS: '3'
