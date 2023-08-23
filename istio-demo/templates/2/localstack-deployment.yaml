@@ -36,7 +36,7 @@ spec:
           - name: AWS_REGION
             value: {{ .Values.aws.sqs.region | quote }}
         ports:
-        - name: http
+        - name: localstack
           containerPort: 4566
         command:
           - sh

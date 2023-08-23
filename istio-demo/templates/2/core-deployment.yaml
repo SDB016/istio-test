@@ -29,6 +29,6 @@ spec:
               - configMapRef:
                     name: core-configmap
               ports:
-              - name: http
+              - name: core
                 containerPort: 8000
             

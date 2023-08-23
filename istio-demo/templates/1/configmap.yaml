@@ -14,3 +14,16 @@ data:
     SQS_MAX_NUMBER_OF_MESSAGES: '10'
     SQS_WAIT_TIME_SECONDS: '20'
     SQS_MAX_DELETE_ATTEMPTS: '3'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: istio-demo
+data:   
+    POSTGRES_HOST: localhost
+    POSTGRES_PORT: '5432'
+    POSTGRES_DB: demo
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
