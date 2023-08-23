@@ -1,0 +1,45 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: istio-demo
+build:
+  artifacts:
+    - image: core
+      context: ./core
+      docker:
+        dockerfile: Dockerfile
+        cacheFrom:
+          - python:3.11-slim-buster
+      sync:
+        infer:
+          - 'core/**'
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+        command: dev
+    build:
+      # tagPolicy:
+      #   envTemplate:
+      #     template: '{{.IMAGE_NAME}}:local'
+      local:
+        push: false
+    manifests:
+      helm:
+        releases:
+          - name: istio-demo
+            chartPath: istio-demo
+            valuesFiles:
+              - ./istio-demo/values.yaml
+            namespace: istio-demo
+            createNamespace: true
+    deploy:
+      helm:
+        releases:
+          - name: istio-demo
+            chartPath: istio-demo
+            valuesFiles:
+              - ./istio-demo/values.yaml
+            namespace: istio-demo
+            createNamespace: true
+      statusCheckDeadlineSeconds: 2000

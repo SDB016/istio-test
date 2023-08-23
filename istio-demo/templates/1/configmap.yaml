@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-configmap
+  namespace: istio-demo
+data:
+    DEBUG: 'true'
+    APP_HOST: 'localhost'
+    APP_PORT: '8000'
+    SQS_QUEUE_URL: ''
+    AWS_ACCESS_KEY_ID: 'test'
+    AWS_SECRET_ACCESS_KEY: 'password'
+    SQS_MAX_NUMBER_OF_MESSAGES: '10'
+    SQS_WAIT_TIME_SECONDS: '20'
+    SQS_MAX_DELETE_ATTEMPTS: '3'

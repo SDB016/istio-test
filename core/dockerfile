@@ -1,17 +1,22 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim-buster
+FROM python:3.11-slim-buster as builder
 
-# Set the working directory in the container to /app
-WORKDIR /app
+ENV PYTHONUNBUFFERED 1
 
-# Add the current directory contents into the container at /app
-ADD . /app
+# Set the working directory in the container to /tmp
+WORKDIR /tmp
 
 # Install poetry and dependencies
-RUN pip install poetry && poetry config virtualenvs.create false && poetry install
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock* /tmp/
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-# Run main.py when the container launches
-CMD ["python", "main.py"]
+FROM python:3.11-slim-buster as run
+COPY --from=builder /tmp/requirements.txt /app/core/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/core/requirements.txt
+COPY . /app/core
+WORKDIR /app/core
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: core
+    labels:
+        app: core
+        tier: backend
+spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    selector:
+        matchLabels:
+            app: core
+            tier: backend
+    template:
+        metadata:
+            labels:
+                app: core
+                tier: backend
+        spec:
+            restartPolicy: Always
+            containers:
+            - name: core
+              image: core
+              imagePullPolicy: "IfNotPresent"
+              envFrom:
+              - configMapRef:
+                    name: core-configmap
+              ports:
+              - name: http
+                containerPort: 8000
+            
