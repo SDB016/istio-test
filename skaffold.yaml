@@ -13,11 +13,26 @@ build:
       sync:
         infer:
           - 'core/**'
+    - image: daemon
+      context: ./daemon
+      jib:
+        type: gradle
 profiles:
   - name: local
     activation:
       - kubeContext: minikube
         command: dev
+    patches:
+      - op: add
+        path: /build/artifacts/1/sync
+        value:
+          # Activate sync on skaffold artifacts
+          auto: true
+      - op: add
+        path: /build/artifacts/1/jib/fromImage
+        # Sync requires 'tar' on the running container to copy files over.
+        # 'java:debug' image contains 'tar'
+        value: gcr.io/distroless/java17-debian11:debug
     build:
       # tagPolicy:
       #   envTemplate:

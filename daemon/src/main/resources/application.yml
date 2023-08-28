@@ -1,0 +1,19 @@
+spring:
+  sql:
+    init:
+      mode: always
+  r2dbc:
+    url: r2dbc:postgresql://postgres:5432/demo
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  web:
+    resources:
+      static-locations: /, classpath:/resources/
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region: ${AWS_REGION}
+    endpoint: ${AWS_ENDPOINT_URL}
+
