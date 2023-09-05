@@ -1,9 +1,19 @@
 #!/bin/bash
 
-# dev cluster name 변경 필요 dev-mpd-eks-cluster
+# dev cluster name 변경 필요 dev-istio-demo-eks-cluster
 export EKS_CONTEXT_LOCAL="minikube"
 
 PROFILE="LOCAL"
+
+for arg in "$@"; do
+  if [ "$arg" == "--local" ]; then
+    PROFILE="LOCAL"
+  elif [ "$arg" == "--dev" ]; then
+    PROFILE="DEV"
+  elif [ "$arg" == "--prd" ]; then
+    PROFILE="PRD"
+  fi
+done
 
 EKS_CONTEXT_VAR="EKS_CONTEXT_$PROFILE"
 EKS_CONTEXT=${!EKS_CONTEXT_VAR}
@@ -19,14 +29,19 @@ fi
 
 export DOCKER_ENV="true"
 
+#istio setting
+#istioctl install --set profile=demo -y
+#helm repo add istio https://istio-release.storage.googleapis.com/charts
+#helm repo update
+
 
 # 환경 변수 정의
 case "$PROFILE" in
 "LOCAL")
-  # Wait for namespace mpd to be deleted
-  if kubectl get ns | grep -q mpd; then
-    echo "mpd namespace exists. Deleting..."
-    kubectl delete ns mpd
+  # Wait for namespace istio-demo to be deleted
+  if kubectl get ns | grep -q istio-demo; then
+    echo "istio-demo namespace exists. Deleting..."
+    kubectl delete ns istio-demo
     sleep 2
   fi
 

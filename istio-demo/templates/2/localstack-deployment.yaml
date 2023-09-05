@@ -6,6 +6,7 @@ metadata:
   labels:
     app: localstack
     tier: queue
+#    istio-injection: enabled
 spec:
   serviceAccountName: localstack-service-account
   progressDeadlineSeconds: 600

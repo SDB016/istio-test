@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: postgres
+    namespace: istio-demo
     labels:
         app: postgres
         tier: db
+#        istio-injection: enabled
 spec:
     progressDeadlineSeconds: 600
     replicas: 1

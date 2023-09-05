@@ -7,10 +7,11 @@ metadata:
         app: core
         tier: backend
 spec:
-    type: LoadBalancer
+    # type: LoadBalancer
     ports:
         - port: 8000
           targetPort: 8000
+          name: tcp-core
           protocol: TCP
     selector:
         app: core

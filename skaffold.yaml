@@ -46,8 +46,8 @@ profiles:
             chartPath: istio-demo
             valuesFiles:
               - ./istio-demo/values.yaml
-            namespace: istio-demo
-            createNamespace: true
+            # namespace: istio-demo
+            createNamespace: false
     deploy:
       helm:
         releases:
@@ -55,6 +55,6 @@ profiles:
             chartPath: istio-demo
             valuesFiles:
               - ./istio-demo/values.yaml
-            namespace: istio-demo
-            createNamespace: true
+            # namespace: istio-demo
+            createNamespace: false
       statusCheckDeadlineSeconds: 2000
