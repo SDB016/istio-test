@@ -20,7 +20,10 @@ done
 
 case "$PROFILE" in
 "LOCAL")
-    skaffold dev --profile local -m ingress,custom-resources,kiali -f istio-skaffold.yaml -v info --platform linux/amd64 
+    minikube addons enable istio-provisioner --images="IstioOperator=istio/operator:1.18.1"
+    minikube addons enable istio
+    kubectl patch iop example-istiocontrolplane -n istio-system --type='json' -p='[{"op": "replace", "path": "/spec/profile", "value":"default"}]'
+    skaffold dev --profile local -m custom-resources,kiali -f istio-skaffold.yaml -v info --platform linux/amd64 
     ;;
 "EDU")
     skaffold dev --profile edu -m ingress,custom-resources,kiali -f istio-skaffold.yaml -v info --platform linux/amd64
