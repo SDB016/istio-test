@@ -99,19 +99,23 @@ apiVersion: skaffold/v2beta22
 kind: Config
 metadata:
   name: custom-resources
-requires:
-  - configs: [istiod]
-deploy:
-  kubectl:
-    manifests: ["./istio/manifests/edu/gateway/*.yaml"]
+# requires:
+#   - configs: [istiod]
+profiles:
+  - name: local
+    activation:
+      - command: local
+    deploy:
+      kubectl:
+        manifests: ["./istio/manifests/edu/gateway/*.yaml"]
 ---
 # https://istio.io/latest/docs/ops/integrations/prometheus/
 apiVersion: skaffold/v2beta22
 kind: Config
 metadata:
   name: prometheus
-requires:
-  - configs: [istiod]
+# requires:
+#   - configs: [istiod]
 deploy:
   kubectl:
     manifests: ["./addons/prometheus.yaml"]
@@ -125,10 +129,17 @@ requires:
 deploy:
   helm:
     releases:
-      - name: kiali-server
-        remoteChart: kiali-server
+      - name: kiali-operator
+        remoteChart: kiali-operator
         repo: https://kiali.org/helm-charts
-        namespace: istio-system
-        version: v1.44.0
-        valuesFiles: [./istio/values/values-kiali.yaml]
+        namespace: kiali-operator
+        createNamespace: true
+        setValueTemplates:
+          cr.create: true
+          cr.namespace: istio-system
+          cr.spec.auth.strategy: anonymous
+
+        # valuesFiles: [./istio/values/kiali-values.yaml]
+        # version: v1.44.0
+        # valuesFiles: [./istio/values/values-kiali.yaml]
 
