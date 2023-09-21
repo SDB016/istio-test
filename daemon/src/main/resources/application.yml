@@ -16,4 +16,5 @@ cloud:
       secret-key: ${AWS_SECRET_ACCESS_KEY}
     region: ${AWS_REGION}
     endpoint: ${AWS_ENDPOINT_URL}
-
+server:
+  port: 7000

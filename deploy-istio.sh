@@ -20,6 +20,7 @@ done
 
 case "$PROFILE" in
 "LOCAL")
+    kubectl delete kiali kiali -n kiali-operator
     minikube addons enable istio-provisioner --images="IstioOperator=istio/operator:1.18.1"
     minikube addons enable istio
     kubectl patch iop example-istiocontrolplane -n istio-system --type='json' -p='[{"op": "replace", "path": "/spec/profile", "value":"default"}]'

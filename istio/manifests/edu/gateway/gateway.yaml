@@ -1,59 +1,23 @@
-apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
+apiVersion: networking.istio.io/v1beta1
 metadata:
-   name: istio-gateway
-   namespace: istio-system
+  name: test-gw
+  namespace: istio-demo
 spec:
-   selector:
-    istio: ingressgateway
-   servers:
+  servers:
     - port:
         number: 8000
-        name: http-core
         protocol: HTTP
+        name: http-core-test
       hosts:
-        - "*"
+        - '*'
+      tls: {}
     - port:
         number: 7000
-        name: http-daemon
         protocol: HTTP
+        name: http-daemon-test
       hosts:
-        - "*"
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-   name: istio-virtual-service
-   namespace: istio-system
-spec:
-   hosts:
-   - "*"
-   gateways:
-   - istio-gateway
-   http:
-   - match:
-       - port: 7000
-     route:
-     - destination:
-         host: daemon.istio-demo.svc.cluster.local
-         port:
-             number: 7000
-   - match:
-       - port: 4566
-     route:
-     - destination:
-        host: localstack.istio-demo.svc.cluster.local
-        port:
-          number: 4566
-   - match:
-       - port: 5432
-     route:
-     - destination:
-        host: postgres.istio-demo.svc.cluster.local
-        port:
-          number: 5432
-   - route:
-       - destination:
-          host: core.istio-demo.svc.cluster.local
-          port:
-              number: 8000
+        - '*'
+      tls: {}
+  selector:
+    istio: ingressgateway
