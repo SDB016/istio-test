@@ -1,4 +1,4 @@
-create table if not exists messages (
-    id SERIAL not null primary key,
-    message VARCHAR(255) NOT NULL
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    message TEXT NOT NULL
 );

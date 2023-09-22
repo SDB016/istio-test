@@ -2,13 +2,16 @@ spring:
   sql:
     init:
       mode: always
-  r2dbc:
-    url: r2dbc:postgresql://postgres:5432/demo
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
   web:
     resources:
       static-locations: /, classpath:/resources/
+  datasource:
+    url: jdbc:postgresql://postgres:5432/demo
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
 cloud:
   aws:
     credentials:

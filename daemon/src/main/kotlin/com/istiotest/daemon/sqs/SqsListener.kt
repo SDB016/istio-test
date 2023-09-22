@@ -21,11 +21,9 @@ class SqsListener(
     fun listen(@Payload sqsMessage: String?, acknowledgement: Acknowledgement) {
         println("Received message: $sqsMessage")
         parseSQSMessage(sqsMessage)?.let { message: Message ->
-            val savedMessageMono = messageService.save(message)
-            savedMessageMono.subscribe{
-                log.info("Id (${it.id}) message is saved")
-                acknowledgement.acknowledge()
-            }
+            val savedMessage = messageService.save(message)
+            log.info("Id (${savedMessage.id}) message is saved")
+            acknowledgement.acknowledge()
         }
 
     }

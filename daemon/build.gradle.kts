@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat
 plugins {
     id("org.springframework.boot") version "3.1.3"
     id("io.spring.dependency-management") version "1.1.3"
-    id("org.graalvm.buildtools.native") version "0.9.24"
     id("com.google.cloud.tools.jib") version "3.3.2"
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
+    kotlin("plugin.jpa") version "1.8.22"
     kotlin("plugin.allopen") version "1.6.21"
 }
 
@@ -43,24 +43,25 @@ jib{
 }
 
 allOpen {
-    annotation("org.springframework.data.relational.core.mapping.Table")
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
 }
 
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("org.springframework:spring-web:6.0.12")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.4")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1"))
+    implementation("org.postgresql:postgresql:42.6.0")
     implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
-    implementation("org.postgresql:r2dbc-postgresql")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
-    runtimeOnly("io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE")
 }
 
 tasks.withType<KotlinCompile> {

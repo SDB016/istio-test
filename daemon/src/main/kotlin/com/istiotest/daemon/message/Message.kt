@@ -1,12 +1,16 @@
 package com.istiotest.daemon.message
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Table
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 
-@Table("messages")
+
+@Table(name="messages")
+@Entity
 class Message (
     val message: String,
-    @Id var id: Long? = null
+    @Id @GeneratedValue var id: Long? = null
 ) {
 
 }
