@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: postgres
-    namespace: istio-demo
+    namespace: not-istio-postgres
     labels:
         app: postgres
         tier: db

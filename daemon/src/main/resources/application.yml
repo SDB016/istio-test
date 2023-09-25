@@ -6,9 +6,10 @@ spring:
     resources:
       static-locations: /, classpath:/resources/
   datasource:
-    url: jdbc:postgresql://postgres:5432/demo
+    url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update

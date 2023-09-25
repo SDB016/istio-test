@@ -4,3 +4,8 @@ metadata:
     name: istio-demo
     labels:
        istio-injection: enabled
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: not-istio-postgres

@@ -12,4 +12,4 @@ postgres:
   database: demo
   username: postgres
   password: password
-  databaseUrl: postgresql://postgres:password@postgres:5432/demo
+  databaseUrl: jdbc:postgresql://postgres.not-istio-postgres.svc.cluster.local:5432/demo

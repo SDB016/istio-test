@@ -19,7 +19,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: postgres-config
-  namespace: istio-demo
+  namespace: not-istio-postgres
 data:   
     POSTGRES_HOST: {{ .Values.postgres.host | quote }}
     POSTGRES_PORT: {{ .Values.postgres.port | quote }}
@@ -34,7 +34,6 @@ metadata:
   name: daemon-configmap
   namespace: istio-demo
 data:
-    SQLALCHEMY_DATABASE_URL: {{ .Values.postgres.databaseUrl | quote }}
     LOG_LEVEL: INFO
     DEBUG: 'true'
     SQS_QUEUE_URL: {{ .Values.aws.sqs.sqsQueueUrl | quote }}
@@ -49,5 +48,6 @@ data:
     DATABASE_NAME: {{ .Values.postgres.database | quote }}
     DATABASE_USERNAME: {{ .Values.postgres.username | quote }}
     DATABASE_PASSWORD: {{ .Values.postgres.password | quote }}
+    DATABASE_URL: {{ .Values.postgres.databaseUrl | quote }}
     DATABASE_PORT: {{ .Values.postgres.port | quote }}
     
