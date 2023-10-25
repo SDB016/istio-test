@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta15
+kind: Config
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+        command: dev
+    deploy:
+      statusCheckDeadlineSeconds: 2000
+      kubectl:
+        manifests:
+          - bookinfo.yaml
