@@ -1,0 +1,60 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: istio-demo
+build:
+  artifacts:
+    - image: core
+      context: ./core
+      docker:
+        dockerfile: Dockerfile
+        cacheFrom:
+          - python:3.11-slim-buster
+      sync:
+        infer:
+          - 'core/**'
+    - image: daemon
+      context: ./daemon
+      jib:
+        type: gradle
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+        command: dev
+    patches:
+      - op: add
+        path: /build/artifacts/1/sync
+        value:
+          # Activate sync on skaffold artifacts
+          auto: true
+      - op: add
+        path: /build/artifacts/1/jib/fromImage
+        # Sync requires 'tar' on the running container to copy files over.
+        # 'java:debug' image contains 'tar'
+        value: gcr.io/distroless/java17-debian11:debug
+    build:
+      # tagPolicy:
+      #   envTemplate:
+      #     template: '{{.IMAGE_NAME}}:local'
+      local:
+        push: false
+    manifests:
+      helm:
+        releases:
+          - name: istio-demo
+            chartPath: istio-demo
+            valuesFiles:
+              - ./istio-demo/values.yaml
+            # namespace: istio-demo
+            createNamespace: false
+    deploy:
+      helm:
+        releases:
+          - name: istio-demo
+            chartPath: istio-demo
+            valuesFiles:
+              - ./istio-demo/values.yaml
+            # namespace: istio-demo
+            createNamespace: false
+      statusCheckDeadlineSeconds: 2000

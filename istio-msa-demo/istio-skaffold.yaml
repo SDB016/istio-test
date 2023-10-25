@@ -1,0 +1,145 @@
+# Skaffold - https://skaffold.dev/                 
+# ------------------------------------------------ #
+# This is for illustration purposes only           
+# ------------------------------------------------ #
+# Installation options & modules 
+# ------------------------------------------------ #
+# istio              - `skaffold run -m istiod`    
+# ingress            - `skaffold run -m ingress`
+# Addons:
+#   - kiali          - `skaffold run -m kiali`
+#   - prometheus     - `skaffold run -m prometheus`
+# Demos: 
+#   - bookinfo       - `skaffold run -m bookinfo`
+# ------------------------------------------------ #
+# Development mode - skaffold dev #
+# ------------------------------------------------- #
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: istio-base  # istio CRDs 
+profiles:
+  - name: local
+    activation:
+      - command: local
+    deploy:
+      helm:
+        releases:
+          - name: istio-base
+            chartPath: ./istio/manifests/base
+            namespace: istio-system
+            createNamespace: true
+  - name: run
+    activation:
+      - command: run
+    deploy:
+      helm:
+        releases:
+          - name: istio-base
+            remoteChart: base
+            repo: https://istio-release.storage.googleapis.com/charts
+            namespace: istio-system
+            createNamespace: true
+---
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: istiod
+requires:
+  - configs: [istio-base]
+profiles:
+  - name: local
+    activation:
+      - command: local
+    deploy:
+      helm:
+        releases:
+          - name: istiod
+            chartPath: ./istio/manifests/istio-discovery
+            namespace: istio-system
+  - name: run
+    activation:
+      - command: run
+    deploy:
+      helm:
+        releases:
+          - name: istiod
+            remoteChart: istiod
+            repo: https://istio-release.storage.googleapis.com/charts
+            namespace: istio-system
+---
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: ingress
+requires:
+  - configs: [istiod]
+profiles:
+  - name: local
+    activation:
+      - command: local
+    deploy:
+      helm:
+        releases:
+          - name: istio-ingressgateway
+            chartPath: ./istio/manifests/local/gateway
+            namespace: istio-system
+  - name: run
+    activation:
+      - command: run
+    deploy:
+      helm:
+        releases:
+          - name: istio-ingressgateway
+            remoteChart: gateway
+            repo: https://istio-release.storage.googleapis.com/charts
+            namespace: istio-system
+---
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: custom-resources
+# requires:
+#   - configs: [istiod]
+profiles:
+  - name: local
+    activation:
+      - command: local
+    deploy:
+      kubectl:
+        manifests: ["./istio/manifests/edu/gateway/*.yaml"]
+---
+# https://istio.io/latest/docs/ops/integrations/prometheus/
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: prometheus
+# requires:
+#   - configs: [istiod]
+deploy:
+  kubectl:
+    manifests: ["./addons/prometheus.yaml"]
+---
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: kiali
+requires:
+  - configs: [prometheus]
+deploy:
+  helm:
+    releases:
+      - name: kiali-operator
+        remoteChart: kiali-operator
+        repo: https://kiali.org/helm-charts
+        namespace: kiali-operator
+        createNamespace: true
+        setValueTemplates:
+          cr.create: true
+          cr.namespace: istio-system
+          cr.spec.auth.strategy: anonymous
+
+        # valuesFiles: [./istio/values/kiali-values.yaml]
+        # version: v1.44.0
+        # valuesFiles: [./istio/values/values-kiali.yaml]
+

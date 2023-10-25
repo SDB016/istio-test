@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "core"
+version = "0.1.0"
+description = ""
+authors = ["SDB016 <dongbin4013@naver.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.101.1"
+uvicorn = "^0.23.2"
+aioboto3 = "^11.2.0"
+botocore = ">=1.29.76,<1.29.77"
+pydantic-settings = "^2.0.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

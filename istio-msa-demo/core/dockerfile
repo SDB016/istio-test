@@ -1,0 +1,22 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11-slim-buster as builder
+
+ENV PYTHONUNBUFFERED 1
+
+# Set the working directory in the container to /tmp
+WORKDIR /tmp
+
+# Install poetry and dependencies
+RUN pip install poetry
+COPY ./pyproject.toml ./poetry.lock* /tmp/
+
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+FROM python:3.11-slim-buster as run
+COPY --from=builder /tmp/requirements.txt /app/core/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/core/requirements.txt
+COPY . /app/core
+WORKDIR /app/core
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

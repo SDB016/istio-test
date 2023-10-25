@@ -1,0 +1,10 @@
+global:
+    hub: docker.io/istio
+    tag: 1.11.3
+
+istiod:
+    enabled: true
+    replicaCount: 1
+
+istio-ingress:
+    enabled: true

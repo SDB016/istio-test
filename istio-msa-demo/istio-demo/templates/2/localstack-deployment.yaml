@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: istio-demo
+  name: localstack
+  labels:
+    app: localstack
+    tier: queue
+#    istio-injection: enabled
+spec:
+  serviceAccountName: localstack-service-account
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localstack
+      tier: queue
+  template:
+    metadata:
+      labels:
+        app: localstack
+        tier: queue
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: localstack
+        image: localstack/localstack
+        imagePullPolicy: "IfNotPresent"
+        envFrom:
+          - configMapRef:
+              name: core-configmap
+        env:
+          - name: AWS_ACCESS_KEY_ID
+            value: {{ .Values.aws.sqs.accessKeyId | quote }}
+          - name: AWS_SECRET_ACCESS_KEY
+            value: {{ .Values.aws.sqs.secretAccessKey | quote }}
+          - name: AWS_REGION
+            value: {{ .Values.aws.sqs.region | quote }}
+        ports:
+        - name: localstack
+          containerPort: 4566
+        command:
+          - sh
+          - -c
+          - |
+            # Start Localstack
+            /usr/local/bin/docker-entrypoint.sh &
+            # Wait for Localstack to be ready
+            until curl --silent --fail http://localhost:4566; do
+              echo 'Waiting for Localstack to be ready'
+              sleep 2
+            done
+            # Create SQS queue
+            aws --endpoint-url=http://localhost:4566 sqs create-queue --region=ap-northeast-2 --queue-name test-sqs.fifo --attributes FifoQueue=true
+            # ,ContentBasedDeduplication=true
+            # Keep Localstack running
+            wait

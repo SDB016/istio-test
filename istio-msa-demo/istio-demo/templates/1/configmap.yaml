@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-configmap
+  namespace: istio-demo
+data:
+    DEBUG: 'true'
+    APP_HOST: 'localhost'
+    APP_PORT: '8000'
+    SQS_QUEUE_URL: {{ .Values.aws.sqs.sqsQueueUrl | quote }}
+    AWS_ACCESS_KEY_ID: {{ .Values.aws.sqs.accessKeyId | quote }}
+    AWS_SECRET_ACCESS_KEY: {{ .Values.aws.sqs.secretAccessKey | quote }}
+    AWS_ENDPOINT_URL: {{ .Values.aws.sqs.endpointUrl | quote }}
+    SQS_MAX_NUMBER_OF_MESSAGES: '10'
+    SQS_WAIT_TIME_SECONDS: '20'
+    SQS_MAX_DELETE_ATTEMPTS: '3'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: not-istio-postgres
+data:   
+    POSTGRES_HOST: {{ .Values.postgres.host | quote }}
+    POSTGRES_PORT: {{ .Values.postgres.port | quote }}
+    POSTGRES_DB: {{ .Values.postgres.database | quote }}
+    POSTGRES_USER: {{ .Values.postgres.username | quote }}
+    POSTGRES_PASSWORD: {{ .Values.postgres.password | quote }}
+    POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: daemon-configmap
+  namespace: istio-demo
+data:
+    LOG_LEVEL: INFO
+    DEBUG: 'true'
+    SQS_QUEUE_URL: {{ .Values.aws.sqs.sqsQueueUrl | quote }}
+    AWS_ACCESS_KEY_ID: {{ .Values.aws.sqs.accessKeyId | quote }}
+    AWS_SECRET_ACCESS_KEY: {{ .Values.aws.sqs.secretAccessKey | quote }}
+    AWS_REGION: {{ .Values.aws.sqs.region | quote }}
+    AWS_ENDPOINT_URL: {{ .Values.aws.sqs.endpointUrl | quote }}
+    SQS_MAX_NUMBER_OF_MESSAGES: "1"
+    SQS_WAIT_TIME_SECONDS: "40"
+    SQS_MAX_DELETE_ATTEMPTS: "3"
+    DATABASE_HOST: {{ .Values.postgres.host | quote }}
+    DATABASE_NAME: {{ .Values.postgres.database | quote }}
+    DATABASE_USERNAME: {{ .Values.postgres.username | quote }}
+    DATABASE_PASSWORD: {{ .Values.postgres.password | quote }}
+    DATABASE_URL: {{ .Values.postgres.databaseUrl | quote }}
+    DATABASE_PORT: {{ .Values.postgres.port | quote }}
+    
