@@ -1,12 +1,46 @@
-apiVersion: skaffold/v2beta15
+apiVersion: skaffold/v4beta6
 kind: Config
+metadata:
+  name: update-policy-demo
 profiles:
   - name: local
     activation:
-      - kubeContext: minikube
-        command: dev
+    - kubeContext: minikube
+      command: dev
+    manifests:
+      rawYaml:
+        - bookinfo/manifests/bookinfo.yaml
+        - bookinfo/manifests/bookinfo-gateway.yaml
     deploy:
       statusCheckDeadlineSeconds: 2000
-      kubectl:
-        manifests:
-          - bookinfo.yaml
+      kubectl: {}
+---
+# https://istio.io/latest/docs/ops/integrations/prometheus/
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: prometheus
+# requires:
+#   - configs: [istiod]
+deploy:
+  kubectl:
+    manifests: ["./kiali/addons/prometheus.yaml"]
+---
+apiVersion: skaffold/v2beta22
+kind: Config
+metadata:
+  name: kiali
+requires:
+  - configs: [prometheus]
+deploy:
+  helm:
+    releases:
+      - name: kiali-operator
+        remoteChart: kiali-operator
+        repo: https://kiali.org/helm-charts
+        namespace: kiali-operator
+        createNamespace: true
+        setValueTemplates:
+          cr.create: true
+          cr.namespace: istio-system
+          cr.spec.auth.strategy: anonymous
